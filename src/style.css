@@ -8,4 +8,26 @@
   --color-green: #58c358;
 
   --text-shadow-title: 5px 5px 6px rgba(0, 0, 0, 1);
+  --text-shadow-up: 1px -2px 2px rgba(0, 0, 0, 1);
+}
+
+@layer utilities {
+  .no-spinner::-webkit-outer-spin-button,
+  .no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .no-spinner {
+    -moz-appearance: textfield;
+  }
+}
+
+.text-alien {
+  color: #bde274;
+  text-shadow:
+    -1px -1px 0 #49f8df,
+     1px -1px 0 #49f8df,
+    -1px  1px 0 #49f8df,
+     1px  1px 0 #49f8df;
 }
