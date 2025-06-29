@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Miriam+Libre:wght@400..700&display=swap');
+@import "tailwindcss";
+
+@theme{
+  --font-miriam: "Miriam Libre", sans-serif;
+
+  --color-light-green: #bde274;
+  --color-green: #58c358;
+
+  --text-shadow-title: 5px 5px 6px rgba(0, 0, 0, 1);
+}
