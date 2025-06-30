@@ -3,6 +3,7 @@
         <img class="w-40" :src="crop.img" alt=""/>
         <h1 class="text-7xl font-bold my-auto text-shadow-md">{{ crop.name }}</h1>
     </div>
+    <p class="text-center text-red-500 animate-pulse">Keep in mind that the result IS NOT exact. It is an approximation of the price value for the crop</p>
     <div class="w-[80%] mx-auto flex flex-wrap relative">
         <div class="mt-10">
             <div class="flex items-center gap-x-2 mb-2">
@@ -100,7 +101,7 @@
           </button>
           <div v-if="calculationResult !== null">
             <p class="text-2xl text-shadow-md">
-              Final price: <span class="ml-1 inline-block animate-bounce">{{ Math.round(calculationResult) }}</span>
+              Final price: <span class="ml-1 inline-block animate-bounce">~{{ Math.round(calculationResult).toLocaleString('en-US') }}</span>
             </p>
           </div>
         </div>

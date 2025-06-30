@@ -17,7 +17,7 @@ export function useDecimalInput(props, emit) {
       formatted = parts[0] + '.' + parts[1].substring(0, 2)
     }
     
-    return formatted.replace(/\./g, ',')
+    return formatted
   }
 
   const handleInput = (event) => {
@@ -27,7 +27,7 @@ export function useDecimalInput(props, emit) {
 
   const handleBlur = () => {
     const num = parseFloat(displayValue.value.replace(/,/g, '.')) || null
-    displayValue.value = num !== null ? num.toFixed(2).replace('.', ',') : ''
+    displayValue.value = num !== null ? num.toFixed(2) : ''
     emit('update:value', num)
   }
 
@@ -39,7 +39,7 @@ export function useDecimalInput(props, emit) {
   watch(() => props.value, (newVal) => {
     const currentNum = parseFloat(displayValue.value.replace(/,/g, '.')) || null
     if (newVal !== currentNum) {
-      displayValue.value = newVal !== null ? newVal.toFixed(2).replace('.', ',') : ''
+      displayValue.value = newVal !== null ? newVal.toFixed(2) : ''
     }
   }, { immediate: true })
 
