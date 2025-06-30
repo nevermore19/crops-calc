@@ -48,7 +48,7 @@
               </label>
             </div>
             <div v-for="mutation in mutations.env" :key="mutation" class="flex items-center gap-x-2 mr-5 mb-2">
-              <input type="checkbox" :id="mutation.name.toLowerCase()" class="w-5 h-5" v-model="selectedEnvMutations"/>
+              <input type="checkbox" :id="mutation.name.toLowerCase()" class="w-5 h-5" v-model="selectedEnvMutations" :value="mutation.name"/>
               <label :for="mutation.name.toLowerCase()" :class="`text-xl select-none ${mutation.color}`">
                 {{ mutation.name }}
               </label>
@@ -78,13 +78,13 @@
               </label>
             </div>
             <div v-for="mutation in mutations.limited" :key="mutation" class="flex items-center gap-x-2 mr-5 mb-2">
-              <input type="checkbox" :id="mutation.name.toLowerCase()" class="w-5 h-5" v-model="selectedLimitedMutations"/>
+              <input type="checkbox" :id="mutation.name.toLowerCase()" class="w-5 h-5" v-model="selectedLimitedMutations" :value="mutation.name"/>
               <label :for="mutation.name.toLowerCase()" :class="`text-xl select-none ${mutation.color}`">
                 {{ mutation.name }}
               </label>
             </div>
             <div class="flex items-center gap-x-2 mr-5 mb-2">
-              <input type="checkbox" id="disco" class="w-5 h-5"/>
+              <input type="checkbox" id="disco" class="w-5 h-5" v-model="selectedLimitedMutations" value="disco"/>
               <label for="disco" class="text-xl select-none text-orange-900 mr-3">
                 <span class="text-red-200 text-shadow-md text-shadow-red-500">D</span><span class="text-yellow-200 text-shadow-md text-shadow-yellow-500">i</span><span class="text-green-200 text-shadow-md text-shadow-green-500">s</span><span class="text-blue-200 text-shadow-md text-shadow-blue-500">c</span><span class="text-purple-200 text-shadow-md text-shadow-purple-500">o</span>
               </label>
@@ -156,9 +156,9 @@ export default {
     })
 
       const finalPrice = computed(() => {
-      const weight = parseFloat(displayValue.value.replace(',', '.'))
-      console.log('finalPrice computed:', { fConst: crop?.fConst, c: crop?.c, weight })
-      if (!crop || crop.fConst === undefined || crop.c === undefined) return null
+      const weight = parseFloat(displayValue.value.replace(',', '.')) 
+      console.log('finalPrice computed:', { fConst: crop?.fConst, c: crop?.c, minValWeight: crop?.minValWeight, weight }) 
+      if (!crop || crop.fConst === undefined || crop.c === undefined || crop.minValWeight === undefined) return null 
       if (isNaN(weight) || weight <= 0) return null
 
       const growthValue = growthMutation(selectedGrowth.value)
@@ -169,7 +169,8 @@ export default {
         selectedEnvMutations.value,
         selectedLimitedMutations.value
       )
-      const price = calculatePrice(crop.fConst, crop.c, weight, growthValue, mutationSum, totalCheckedMutations.value)
+      console.log(crop.fConst, crop.c, weight, growthValue, mutationSum, totalCheckedMutations.value, crop.minValWeight)
+      const price = calculatePrice(crop.fConst, crop.c, weight, growthValue, mutationSum, totalCheckedMutations.value, crop.minValWeight)
       console.log('Calculated price via calculatePrice:', price)
       return price
     })

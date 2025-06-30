@@ -63,6 +63,13 @@ export function calculateSelectedMutations(selectedEnv, selectedBurn, selectedSu
     return totalM;
 }
 
-export function calculatePrice(fConst, c, weight, growth, mutationSum, numOfMut){
-    return ((fConst * Math.pow(weight, 2)) + c) * growth * (1 + mutationSum - numOfMut);
+export function calculatePrice(fConst, c, weight, growth, mutationSum, numOfMut, minValWeight) {
+    if (weight <= minValWeight) {
+        // Masa poniżej lub równa progowi - cena minimalna
+        return c * growth * (1 + mutationSum - numOfMut);
+    } else {
+        // Masa powyżej progu - liczymy z przesunięciem masy^2 o próg^2
+        const adjustedMassSquared = Math.pow(weight, 2) - Math.pow(minValWeight, 2);
+        return ((fConst * adjustedMassSquared) + c) * growth * (1 + mutationSum - numOfMut);
+    }
 }
