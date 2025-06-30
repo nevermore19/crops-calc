@@ -1,20 +1,27 @@
 <template>
-    <div class="flex flex-row justify-center mt-10">
-        <img class="w-40" :src="crop.img" alt=""/>
-        <h1 class="text-7xl font-bold my-auto text-shadow-md">{{ crop.name }}</h1>
+    <div class="flex flex-row justify-center mt-10
+    max-sm:mt-5">
+        <img :src="crop.img" alt="" class="w-40
+        max-sm:w-20"/>
+        <h1 class="text-7xl font-bold my-auto text-shadow-md
+        max-sm:text-4xl">{{ crop.name }}</h1>
     </div>
-    <p class="text-center text-red-500 animate-pulse">Keep in mind that the result IS NOT exact. It is an approximation of the price value for the crop</p>
+    <p class="text-center text-red-500 animate-pulse
+    max-sm:text-sm">Keep in mind that the result IS NOT exact. It is an approximation of the price value for the crop</p>
     <div class="w-[80%] mx-auto flex flex-wrap relative">
         <div class="mt-10">
             <div class="flex items-center gap-x-2 mb-2">
-                <p class="text-3xl mb-2 text-shadow-xs">Crop weight:</p>
+                <p class="text-3xl mb-2 text-shadow-xs
+                max-sm:text-2xl">Crop weight:</p>
                 <input type="text" inputmode="decimal" class="no-spinner h-9 w-30 text-2xl px-2 border focus:outline-1 focus:outline-white"
                 v-model="displayValue"
                 @input="handleInput"
                 @blur="handleBlur"
                 placeholder="0.00">
             </div>
-            <p class="text-3xl mb-5 text-shadow-xs">Growth mutations:</p>
+            <p class="text-3xl mb-5 text-shadow-xs
+            max-sm:text-2xl
+            max-sm:mb-3">Growth mutations:</p>
             <div class="flex flex-wrap">
             <div v-if="crop.id === 'sugar-apple'" class="flex items-center gap-x-2 mr-5 mb-2">
                 <input id="ripe" type="checkbox" class="w-5 h-5" v-model="selectedGrowth.ripe" :disabled="isAnySelectedGrowth && !selectedGrowth.ripe">
@@ -32,7 +39,9 @@
             </div>
           </div>
 
-          <p class="text-3xl mb-5 mt-5 text-shadow-xs">Environmental mutations:</p>
+          <p class="text-3xl my-5 text-shadow-xs
+          max-sm:text-2xl
+          max-sm:my-3">Environmental mutations:</p>
           <div class="flex flex-wrap">
             <div class="flex items-center gap-x-2 mr-5 mb-2">
                 <input id="chilled" type="checkbox" class="w-5 h-5" v-model="selectedEnv.chilled" :disabled="isAnySelectedEnv && !selectedEnv.chilled">
@@ -56,7 +65,9 @@
             </div>
           </div>
 
-          <p class="text-3xl mb-5 mt-5 text-shadow-xs">Limited mutations:</p>
+          <p class="text-3xl my-5 text-shadow-xs
+          max-sm:text-2xl
+          max-sm:my-3">Limited mutations:</p>
           <div class="flex flex-wrap">
             <div class="flex items-center gap-x-2 mr-5 mb-2">
                 <input id="burnt" type="checkbox" class="w-5 h-5" v-model="selectedBurn.burnt" :disabled="isAnySelectedBurn && !selectedBurn.burnt">
@@ -92,14 +103,17 @@
             </div>
           </div>
         </div>
-        <div class="mt-5 flex flex-row gap-20">
+        <div class="my-5 flex flex-row gap-20
+        max-sm:gap-3
+        max-sm:flex-wrap
+        max-sm:justify-center">
           <button 
           @click="calculateFinalPrice"
-          class="px-3 py-1 bg-green rounded text-white font-bold text-xl shadow text-shadow"
+          class="flex-shrink-0 !px-3 !py-1 bg-green rounded text-white font-bold text-xl shadow text-shadow"
           >
             Calculate Price
           </button>
-          <div v-if="calculationResult !== null">
+          <div v-if="calculationResult !== null" >
             <p class="text-2xl text-shadow-md">
               Final price: <span class="ml-1 inline-block animate-bounce">~{{ Math.round(calculationResult).toLocaleString('en-US') }}</span>
             </p>
