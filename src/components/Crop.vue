@@ -3,12 +3,14 @@
         <img class="w-40" :src="crop.img" alt=""/>
         <h1 class="text-7xl font-bold my-auto text-shadow-md">{{ crop.name }}</h1>
     </div>
-    <div class="w-[80%] mx-auto flex flex-wrap">
+    <div class="w-[80%] mx-auto flex flex-wrap relative">
         <div class="mt-10">
             <div class="flex items-center gap-x-2 mb-2">
                 <p class="text-3xl mb-2 text-shadow-xs">Crop weight:</p>
-                <input type="text" inputmode="decimal" class="no-spinner h-9 w-20 text-2xl px-2 border focus:none"
-                
+                <input type="text" inputmode="decimal" class="no-spinner h-9 w-30 text-2xl px-2 border focus:outline-1 focus:outline-white"
+                v-model="displayValue"
+                @input="handleInput"
+                @blur="handleBlur"
                 placeholder="0.00">
             </div>
             <p class="text-3xl mb-5 text-shadow-xs">Growth mutations:</p>
@@ -46,7 +48,7 @@
               </label>
             </div>
             <div v-for="mutation in mutations.env" :key="mutation" class="flex items-center gap-x-2 mr-5 mb-2">
-              <input type="checkbox" :id="mutation.name.toLowerCase()" class="w-5 h-5" />
+              <input type="checkbox" :id="mutation.name.toLowerCase()" class="w-5 h-5" v-model="selectedEnvMutations"/>
               <label :for="mutation.name.toLowerCase()" :class="`text-xl select-none ${mutation.color}`">
                 {{ mutation.name }}
               </label>
@@ -76,7 +78,7 @@
               </label>
             </div>
             <div v-for="mutation in mutations.limited" :key="mutation" class="flex items-center gap-x-2 mr-5 mb-2">
-              <input type="checkbox" :id="mutation.name.toLowerCase()" class="w-5 h-5" />
+              <input type="checkbox" :id="mutation.name.toLowerCase()" class="w-5 h-5" v-model="selectedLimitedMutations"/>
               <label :for="mutation.name.toLowerCase()" :class="`text-xl select-none ${mutation.color}`">
                 {{ mutation.name }}
               </label>
@@ -89,6 +91,19 @@
             </div>
           </div>
         </div>
+        <div class="mt-5 flex flex-row gap-20">
+          <button 
+          @click="calculateFinalPrice"
+          class="px-3 py-1 bg-green rounded text-white font-bold text-xl shadow text-shadow"
+          >
+            Calculate Price
+          </button>
+          <div v-if="calculationResult !== null">
+            <p class="text-2xl text-shadow-md">
+              Final price: <span class="ml-1 inline-block animate-bounce">{{ Math.round(calculationResult) }}</span>
+            </p>
+          </div>
+        </div>
     </div>
 </template>
 
@@ -97,12 +112,23 @@ import { ref, computed } from 'vue'
 import { crops } from '../data/crops.js'
 import { mutations } from '../data/mutations.js'
 import { useMutationSelection } from '../utils/useMutationSelection'
+import { useDecimalInput } from '../utils/useDecimalInput'
+import { growthMutation, calculateSelectedMutations, calculatePrice } from '../utils/calculatePrice'
 import { useRoute } from 'vue-router'
 
 export default {
-  setup() {
+  props: {
+    value: { type: Number, default: null },
+  },
+  setup(props, { emit }) {
     const route = useRoute()
     const crop = crops.find(c => c.id === route.params.id)
+    const calculationResult = ref(null)
+
+    const selectedEnvMutations = ref([])
+    const selectedLimitedMutations = ref([])
+
+    const { displayValue, handleInput, handleBlur } = useDecimalInput(props, emit)
 
     const {
       selectedGrowth,
@@ -115,16 +141,82 @@ export default {
       isAnySelectedSun,
     } = useMutationSelection()
 
-    return { crop,
-             mutations,
-             selectedGrowth,
-             isAnySelectedGrowth,
-             selectedEnv,
-             isAnySelectedEnv,
-             selectedBurn,
-             isAnySelectedBurn,
-             selectedSun,
-             isAnySelectedSun}
+    const totalCheckedMutations = computed(() => {
+      const countChecked = objOrArray => Array.isArray(objOrArray)
+        ? objOrArray.length
+        : Object.values(objOrArray).filter(Boolean).length
+
+      return (
+        countChecked(selectedEnv.value) +
+        countChecked(selectedBurn.value) +
+        countChecked(selectedSun.value) +
+        selectedEnvMutations.value.length +
+        selectedLimitedMutations.value.length
+      )
+    })
+
+      const finalPrice = computed(() => {
+      const weight = parseFloat(displayValue.value.replace(',', '.'))
+      console.log('finalPrice computed:', { fConst: crop?.fConst, c: crop?.c, weight })
+      if (!crop || crop.fConst === undefined || crop.c === undefined) return null
+      if (isNaN(weight) || weight <= 0) return null
+
+      const growthValue = growthMutation(selectedGrowth.value)
+      const mutationSum = calculateSelectedMutations(
+        selectedEnv.value,
+        selectedBurn.value,
+        selectedSun.value,
+        selectedEnvMutations.value,
+        selectedLimitedMutations.value
+      )
+      const price = calculatePrice(crop.fConst, crop.c, weight, growthValue, mutationSum, totalCheckedMutations.value)
+      console.log('Calculated price via calculatePrice:', price)
+      return price
+    })
+
+    function calculateFinalPrice() {
+      console.log('Calculate button clicked')
+      console.log('Current displayValue:', displayValue.value)
+      console.log('Computed finalPrice:', finalPrice.value)
+      calculationResult.value = finalPrice.value
+    }
+
+    return {
+      crop,
+      mutations,
+      selectedGrowth,
+      isAnySelectedGrowth,
+      selectedEnv,
+      isAnySelectedEnv,
+      selectedBurn,
+      isAnySelectedBurn,
+      selectedSun,
+      isAnySelectedSun,
+      selectedEnvMutations,
+      selectedLimitedMutations,
+      displayValue,
+      handleInput,
+      handleBlur,
+      calculationResult,
+      totalCheckedMutations,
+      finalPrice,
+      calculateFinalPrice,
+    }
+  },
+
+  computed: {
+    totalGrowthValue() {
+      return growthMutation(this.selectedGrowth)
+    },
+    totalOtherMutationsValue() {
+      return calculateSelectedMutations(
+        this.selectedEnv,
+        this.selectedBurn,
+        this.selectedSun,
+        this.selectedEnvMutations || [],
+        this.selectedLimitedMutations || []
+      )
+    }
   }
 }
 </script>

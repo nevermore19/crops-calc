@@ -1,9 +1,9 @@
 export const crops = [
-    { id: 'carrot', name: 'Carrot', img: '/Carrot.webp' },
+    { id: 'carrot', name: 'Carrot', img: '/Carrot.webp', fConst: 1 },
     { id: 'strawberry', name: 'Strawberry', img: '/Strawberry.webp' },
     { id: 'blueberry', name: 'Blueberry', img: '/Blueberry.webp' },
     { id: 'rose', name: 'Rose', img: '/Rose.webp' },
-    { id: 'tomato', name: 'Tomato', img: '/Tomato.webp' },
+    { id: 'tomato', name: 'Tomato', img: '/Tomato.webp', fConst:101.14, c:7.64 },
     { id: 'cauliflower', name: 'Cauliflower', img: '/Cauliflower.webp' },
     { id: 'pear', name: 'Pear', img: '/Pear.webp' },
     { id: 'raspberry', name: 'Raspberry', img: '/Raspberry.webp' },
