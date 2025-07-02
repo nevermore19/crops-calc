@@ -8,7 +8,7 @@ Crops calculator is a simple Vue-based web application that allows to calculate 
 🌐 Check out **live version** [here](https://crops-calc.vercel.app)
 
 ### Features
-- Calculate potential profit for 11 crops (more coming soon!)
+- Calculate potential profit for 10+ crops (more coming soon!)
 - Choose from almost all available mutation types
 - Real-time input validation and formatting
 - Clean and responsive UI for mobile and desktop
