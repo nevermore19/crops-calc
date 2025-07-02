@@ -31,3 +31,26 @@
     -1px  1px 0 #49f8df,
      1px  1px 0 #49f8df;
 }
+
+
+input[type="range"] {
+  @apply w-40 bg-slate-50 rounded-lg appearance-none cursor-pointer shadow-sm;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  @apply appearance-none w-4 h-4 bg-green rounded-full;
+  margin-top: -4px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  @apply w-4 h-2 bg-green rounded-full border-none;
+  margin-top: -4px;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  @apply bg-slate-50 h-2 rounded;
+}
+
+input[type="range"]::-moz-range-track {
+  @apply bg-slate-50 h-2 rounded;
+}

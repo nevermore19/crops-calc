@@ -1,6 +1,5 @@
 <template>
-    <div class="flex flex-row justify-center mt-10
-    max-sm:mt-5">
+    <div class="flex flex-row justify-center mt-5">
         <img :src="crop.img" alt="" class="w-40
         max-sm:w-20"/>
         <h1 class="text-7xl font-bold my-auto text-shadow-md
@@ -8,8 +7,22 @@
     </div>
     <p class="text-center text-red-500 animate-pulse
     max-sm:text-sm">Keep in mind that the result IS NOT exact. It is an approximation of the price value for the crop</p>
-    <div class="w-[80%] mx-auto flex flex-wrap relative">
+    <div class="w-[80%] mx-auto flex flex-wrap">
         <div class="mt-10">
+          <div class="flex items-center gap-5 mb-2
+          max-sm:flex-wrap
+          max-sm:gap-2">
+            <label for="profitSlider" class="mb-2 text-3xl text-shadow-xs
+                max-sm:text-2xl
+                max-sm:mb-0">
+              Friend Boost:
+            </label>
+            <input type="range" id="fBoost" min="0" max="40" step="10" v-model="sliderValue" class="">
+            <label for="profitSlader" class="mb-2 text-3xl text-shadow-xs
+                max-sm:text-2xl">
+               {{ sliderValue }}%
+            </label>
+          </div>
             <div class="flex items-center gap-x-2 mb-2">
                 <p class="text-3xl mb-2 text-shadow-xs
                 max-sm:text-2xl">Crop weight:</p>
@@ -109,13 +122,14 @@
         max-sm:justify-center">
           <button 
           @click="calculateFinalPrice"
-          class="flex-shrink-0 !px-3 !py-1 bg-green rounded text-white font-bold text-xl shadow text-shadow"
+          class="!px-3 !py-1 bg-green rounded text-white font-bold text-xl shadow text-shadow"
           >
             Calculate Price
           </button>
-          <div v-if="calculationResult !== null" >
-            <p class="text-2xl text-shadow-md">
-              Final price: <span class="ml-1 inline-block animate-bounce">~{{ Math.round(calculationResult).toLocaleString('en-US') }}</span>
+           <div v-show="true" class="min-w-[150px] text-center">
+            <p v-if="calculationResult !== null" class="text-2xl text-shadow-md">
+              Final price: 
+              <span class="ml-1 inline-block animate-bounce">~{{ Math.round(calculationResult).toLocaleString('en-US') }}</span>
             </p>
           </div>
         </div>
@@ -142,6 +156,8 @@ export default {
 
     const selectedEnvMutations = ref([])
     const selectedLimitedMutations = ref([])
+
+    const sliderValue = ref(0)
 
     const { displayValue, handleInput, handleBlur } = useDecimalInput(props, emit)
 
@@ -172,7 +188,7 @@ export default {
 
       const finalPrice = computed(() => {
       const weight = parseFloat(displayValue.value.replace(',', '.')) 
-      console.log('finalPrice computed:', { fConst: crop?.fConst, c: crop?.c, minValWeight: crop?.minValWeight, weight }) 
+      // console.log('finalPrice computed:', { fConst: crop?.fConst, c: crop?.c, minValWeight: crop?.minValWeight, weight }) 
       if (!crop || crop.fConst === undefined || crop.c === undefined || crop.minValWeight === undefined) return null 
       if (isNaN(weight) || weight <= 0) return null
 
@@ -184,17 +200,14 @@ export default {
         selectedEnvMutations.value,
         selectedLimitedMutations.value
       )
-      console.log(crop.fConst, crop.c, weight, growthValue, mutationSum, totalCheckedMutations.value, crop.minValWeight)
+      // console.log(crop.fConst, crop.c, weight, growthValue, mutationSum, totalCheckedMutations.value, crop.minValWeight)
       const price = calculatePrice(crop.fConst, crop.c, weight, growthValue, mutationSum, totalCheckedMutations.value, crop.minValWeight)
-      console.log('Calculated price via calculatePrice:', price)
+      // console.log('Calculated price via calculatePrice:', price)
       return price
     })
 
     function calculateFinalPrice() {
-      console.log('Calculate button clicked')
-      console.log('Current displayValue:', displayValue.value)
-      console.log('Computed finalPrice:', finalPrice.value)
-      calculationResult.value = finalPrice.value
+      calculationResult.value = finalPrice.value + (finalPrice.value*sliderValue.value/100)
     }
 
     return {
@@ -216,23 +229,9 @@ export default {
       calculationResult,
       totalCheckedMutations,
       finalPrice,
+      sliderValue,
       calculateFinalPrice,
     }
   },
-
-  computed: {
-    totalGrowthValue() {
-      return growthMutation(this.selectedGrowth)
-    },
-    totalOtherMutationsValue() {
-      return calculateSelectedMutations(
-        this.selectedEnv,
-        this.selectedBurn,
-        this.selectedSun,
-        this.selectedEnvMutations || [],
-        this.selectedLimitedMutations || []
-      )
-    }
-  }
 }
 </script>
