@@ -43,7 +43,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 input[type="range"]::-moz-range-thumb {
-  @apply w-4 h-2 bg-green rounded-full border-none;
+  @apply w-4 h-4 bg-green rounded-full border-none;
   margin-top: -4px;
 }
 
